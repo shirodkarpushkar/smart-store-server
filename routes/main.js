@@ -1,7 +1,7 @@
 var express= require('express')
-var users = require('../modules/users/userRoutes')
+var customers = require('../modules/customers/routes')
 
 var app = express()
-app.use("/users", users);
+app.use("/customers", customers);
 
 module.exports = app
