@@ -1,5 +1,5 @@
-const CryptoJS = require("crypto-js");
-var config = require("../config");
+import CryptoJS from "crypto-js";
+import config from "@config";
 
 /**
  * Function for Encrypting the data

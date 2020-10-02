@@ -1,7 +1,7 @@
-const api = require("./controller");
-const express = require("express");
-const router = express.Router();
+import api from "@modules/customers/controller";
+import express from "express";
 
+const router = express.Router();
 router.post("/register", api.registration);
 
 module.exports = router;

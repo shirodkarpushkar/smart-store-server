@@ -22,7 +22,8 @@
     "@common": "common",
     "@database": "database",
     "@modules": "modules",
-    "@config":"config.js"
+    "@config": "config.js",
+    "@routes": "routes"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
