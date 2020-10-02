@@ -1,8 +1,7 @@
-var db = require("../../database/dbConnect");
-var functions = require("../../common/functions");
-var _ = require("lodash");
-var statusCodes = require("../../common/statusCode");
-var messages = require("../../common/message");
+import db from "@database/dbConnect";
+import { functions, statusCodes, messages } from "@common/helpers";
+import _ from "lodash";
+
 async function registration(req, res) {
   var body = _.pick(req.body, [
     "firstName",
