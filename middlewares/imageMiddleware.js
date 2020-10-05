@@ -41,7 +41,7 @@ async function imageUploadMiddleware(req, res, next) {
     } else if (err instanceof multer.MulterError) {
       return res.json({
         status: statusCodes.bad_request,
-        message: "Please select an image to upload",
+        message: "Mulitple files are not allowed",
       });
     } else if (err) {
       return res.json({
