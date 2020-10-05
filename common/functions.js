@@ -60,17 +60,15 @@ async function tokenDecrypt(data) {
  * @param {*} return (decrypted data)
  */
 async function sendEmail(to, subject, message) {
-  let testAccount = await nodemailer.createTestAccount();
+  // let testAccount = await nodemailer.createTestAccount();
   let transporter = nodemailer.createTransport({
     /*    service: "gmail", */
-    host: "smtp.ethereal.email",
+    host: "smtp.office365.com",
     port: 587,
     secure: false, // true for 465, false for other ports
     auth: {
-      /*  user: config.SMTPemailAddress,
-      pass: config.SMTPPassword, */
-      user: testAccount.user, // generated ethereal user
-      pass: testAccount.pass, // generated ethereal password
+      user: config.SMTPemailAddress,
+      pass: config.SMTPPassword,
     },
   });
 
@@ -84,7 +82,7 @@ async function sendEmail(to, subject, message) {
   try {
     const mailDetails = await transporter.sendMail(mailOptions);
 
-    console.log("Sent Email URL: %s", nodemailer.getTestMessageUrl(mailDetails));
+    console.log("Message sent: %s", mailDetails.messageId);
     return mailDetails;
   } catch (error) {
     console.log("sendEmail -> error", error);
