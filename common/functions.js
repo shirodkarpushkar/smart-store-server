@@ -1,6 +1,7 @@
 import CryptoJS from "crypto-js";
 import config from "@config";
-
+import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 /**
  * Function for Encrypting the data
  * @param {*} data (data to encrypt)
@@ -28,8 +29,72 @@ function decryptData(data) {
   }
   return data;
 }
+/**
+ * Function for encryting the userId with session
+ * @param {*} data (data to encrypt)
+ * @param {*} return (encrypted data)
+ */
+async function tokenEncrypt(data) {
+  var token = await jwt.sign({ data: data }, config.tokenkey, {
+    expiresIn: config.tokenExpirationTime,
+  }); // Expires in 1 day
+  return token;
+}
+
+/**
+ * Function for decryting the userId with session
+ * @param {*} data (data to decrypt)
+ * @param {*} return (decrypted data)
+ */
+async function tokenDecrypt(data) {
+  try {
+    const decode = await jwt.verify(data, config.tokenkey);
+    return decode;
+  } catch (error) {
+    return error;
+  }
+}
+/**
+ * Function for sending email
+ * @param {*} data (to, sub)
+ * @param {*} return (decrypted data)
+ */
+async function sendEmail(to, subject, message) {
+  let testAccount = await nodemailer.createTestAccount();
+  let transporter = nodemailer.createTransport({
+    /*    service: "gmail", */
+    host: "smtp.ethereal.email",
+    port: 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      /*  user: config.SMTPemailAddress,
+      pass: config.SMTPPassword, */
+      user: testAccount.user, // generated ethereal user
+      pass: testAccount.pass, // generated ethereal password
+    },
+  });
+
+  let mailOptions = {
+    from: config.SMTPSenderEmail,
+    to: to,
+    subject: subject,
+    html: message,
+  };
+
+  try {
+    const mailDetails = await transporter.sendMail(mailOptions);
+
+    console.log("Sent Email URL: %s", nodemailer.getTestMessageUrl(mailDetails));
+    return mailDetails;
+  } catch (error) {
+    console.log("sendEmail -> error", error);
+  }
+}
 
 module.exports = {
   encryptData,
   decryptData,
+  tokenEncrypt,
+  tokenDecrypt,
+  sendEmail,
 };

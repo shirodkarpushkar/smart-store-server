@@ -1,6 +1,8 @@
 import query from "@database/index";
 import { functions, statusCodes, messages } from "@common/helpers";
 import _ from "lodash";
+import config from "@config";
+import fs from "fs";
 async function registration(req, res) {
   var body = _.pick(req.body, [
     "firstName",
@@ -37,6 +39,19 @@ async function registration(req, res) {
       body.state,
       body.zipcode,
     ]);
+    let token = await functions.tokenEncrypt(body.email);
+    token = Buffer.from(token, "ascii").toString("hex");
+    let emailMessage = fs
+      .readFileSync("common/EmailTemplate/welcome.html", "utf8")
+      .toString();
+    emailMessage = emailMessage
+      .replace("$fullname", body.firstName)
+      .replace("$link", config.emailVerificationLink + token);
+    functions.sendEmail(
+      body.email,
+      "Welcome to Smart Store",
+      emailMessage
+    );
 
     return res.json({
       status: {
