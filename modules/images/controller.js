@@ -1,4 +1,4 @@
-import db from "@database/dbConnect";
+import query from "@database/index";
 import { functions, statusCodes, messages } from "@common/helpers";
 import { response } from "express";
 
@@ -8,41 +8,22 @@ async function uploadImage(req, res) {
       let file = req.file;
       const insertQuery =
         "INSERT INTO images (filename, destination, mimetype, size) VALUES (?, ?, ?,?)";
-      const insertResponse = await new Promise((resolve, reject) => {
-        db.query(
-          insertQuery,
-          [
-            file.filename,
-            file.destination.split("/")[1] + "/" + file.filename,
-            file.mimetype,
-            file.size,
-          ],
-          (err, result) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(result);
-            }
-          }
-        );
-      });
+      const insertResponse = await query(insertQuery, [
+        file.filename,
+        file.destination.split("/")[1] + "/" + file.filename,
+        file.mimetype,
+        file.size,
+      ]);
+
       let id = insertResponse.insertId;
       const getQuery = "SELECT * FROM images WHERE id = ?";
-      const getReponse = await new Promise((resolve, reject) => {
-        db.query(getQuery, [id], (err, result) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        });
-      }) 
+      const getReponse = await query(getQuery, [id]);
       res.json({
         status: {
           code: statusCodes.success,
           message: messages.success,
         },
-        result: getReponse ? getReponse[0]: null,
+        result: getReponse ? getReponse[0] : null,
       });
     }
   } catch (err) {
