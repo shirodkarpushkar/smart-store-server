@@ -6,7 +6,8 @@ const imageFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
     cb(null, true);
   } else {
-    cb("Please upload only images.");
+    req.fileValidationError = "Only image files are allowed!";
+    return cb(new Error("Only image files are allowed!"), false);
   }
 };
 var storage = multer.diskStorage({
@@ -30,7 +31,7 @@ async function imageUploadMiddleware(req, res, next) {
     if (req.fileValidationError) {
       return res.json({
         status: statusCodes.bad_request,
-        message: "Please select an image to upload",
+        message: "Only image files are allowed!",
       });
     } else if (!req.file) {
       return res.json({
