@@ -1,6 +1,6 @@
 import multer from "multer";
 import { statusCodes } from "@common/helpers";
-
+import path from 'path'
 /* image middleware */
 const imageFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image")) {
@@ -15,7 +15,7 @@ var storage = multer.diskStorage({
     cb(null, "public/images/");
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}${file.originalname}`);
+    cb(null, `img-${Date.now()}${path.extname(file.originalname)}`);
   },
 });
 var upload = multer({
