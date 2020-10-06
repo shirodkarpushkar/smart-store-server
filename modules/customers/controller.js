@@ -174,15 +174,55 @@ async function signIn(req, res) {
  */
 async function changePassword(req, res) {
   try {
-    const sqlSelectQuery = `SELECT password FROM customers WHERE email = ?`;
-    const details = await query(sqlSelectQuery, [email]);
-    return details;
+    var body = _.pick(req.body, ["oldPassword", "newPassword"]);
+    const email = res.locals.tokenInfo.email;
+    if (
+      validator.isEmpty(body.oldPassword) &&
+      validator.isEmpty(body.newPassword)
+    ) {
+      throw {
+        statusCode: statusCodes.bad_request,
+        message: messages.badRequest,
+        result: null,
+      };
+    }
+    const getQuery = `SELECT password FROM customers WHERE email = ?`;
+    const getPassword = await query(getQuery, [email]);
+    if (getPassword.length <= 0) {
+      throw {
+        statusCode: statusCodes.bad_request,
+        message: messages.invalidDetails,
+        result: null,
+      };
+    }
+    let password = functions.decryptData(getPassword[0].password);
+    if (password !== body.oldPassword) {
+      throw {
+        statusCode: statusCodes.bad_request,
+        message: messages.invalidPassword,
+        result: null,
+      };
+    }
+    // Encrypt password for the user
+    password = functions.encryptData(body.newPassword);
+    const updateQuery = "UPDATE customers SET password = ? WHERE email = ?";
+    const updatePassword = await query(updateQuery, [password, email]);
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: messages.passwordChanged,
+      },
+      result: updatePassword,
+    });
+
   } catch (error) {
-    throw {
-      statusCode: connection_failed,
-      message: error.message,
-      data: JSON.stringify(error),
-    };
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
   }
 }
 
