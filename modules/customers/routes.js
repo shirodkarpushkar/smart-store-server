@@ -1,8 +1,12 @@
 import api from "@modules/customers/controller";
 import express from "express";
-import { existingUser } from "@middlewares/index";
+import { existingUser, auth } from "@middlewares/index";
+
+
 const router = express.Router();
 router.post("/register", existingUser, api.registration);
 router.post("/verifyemail", api.verifyEmail);
+router.post("/signin", api.signIn);
+router.post("/changepassword", auth.validateToken, api.changePassword);
 
 module.exports = router;

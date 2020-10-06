@@ -18,15 +18,14 @@ function encryptData(data) {
  * @param {*} return (decrypt data)
  */
 function decryptData(data) {
-  if (config.bodyEncryption) {
-    var decrypted = CryptoJS.AES.decrypt(data, config.cryptokey);
-    if (decrypted) {
-      var userinfo = JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
-      return userinfo;
-    } else {
-      return { userinfo: { error: "Please send proper token" } };
-    }
+  var decrypted = CryptoJS.AES.decrypt(data, config.tokenkey);
+  if (decrypted) {
+    var userinfo = decrypted.toString(CryptoJS.enc.Utf8);
+    return userinfo;
+  } else {
+    return { userinfo: { error: "Please send proper token" } };
   }
+
   return data;
 }
 /**
