@@ -5,6 +5,11 @@ import fs from "fs";
 import validator from "validator";
 import _ from "lodash";
 
+/**
+ * API for email verification
+ * @param {*} req (registration details)
+ * @param {*} res (json with success/failure)
+ */
 async function registration(req, res) {
   var body = _.pick(req.body, [
     "firstName",
@@ -214,7 +219,65 @@ async function changePassword(req, res) {
       },
       result: updatePassword,
     });
+  } catch (error) {
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
+  }
+}
+/**
+ * API for Forgot Password
+ * @param {*} req (email address )
+ * @param {*} res (json with success/failure)
+ */
+async function forgotPassword(req, res) {
+  try {
+    var body = _.pick(req.body, ["email"]);
 
+    if (!validator.isEmail(body.email)) {
+      throw {
+        statusCode: statusCodes.bad_request,
+        message: messages.invalidEmail,
+        result: null,
+      };
+    }
+    const getQuery =
+      "SELECT id, first_name, last_name, email from customers where email = ?";
+
+    const userDetail = await query(getQuery, [body.email]);
+
+    if (userDetail.length <= 0) {
+      throw {
+        statusCode: statusCodes.bad_request,
+        message: messages.emailAbsent,
+        data: null,
+      };
+    }
+    const to = userDetail[0].email;
+    let token = await functions.tokenEncrypt(to);
+    token = Buffer.from(token, "ascii").toString("hex");
+    const subject = messages.forgotPasswordSubject;
+    const link = config.resetPasswordLink + token;
+    let emailMessage = fs
+      .readFileSync("common/emailtemplate/reset.html", "utf8")
+      .toString();
+    emailMessage = emailMessage
+      .replace("$fullname", userDetail[0].first_name)
+      .replace("$link", link)
+      .replace("$emailId", config.supportEmail);
+
+    functions.sendEmail(to, subject, emailMessage);
+
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: messages.resetLink,
+      },
+    });
   } catch (error) {
     return res.json({
       status: {
@@ -231,4 +294,5 @@ module.exports = {
   verifyEmail,
   changePassword,
   signIn,
+  forgotPassword,
 };

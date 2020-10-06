@@ -33,6 +33,7 @@ module.exports = {
   emailVerify: "Please complete email verification process",
   emailVerificationSuccess:
     "Email address successfully verified. Please login to continue",
+  emailAbsent:"Email address doesn't exist, pls register",
   emailLinkExpired: "Link has expired.",
   registrationEmailSubject: "Welcome to CommonAPI",
   passwordChanged: "Password changed successfully",

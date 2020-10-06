@@ -6,8 +6,10 @@ module.exports = {
   DBName: "store",
   tokenkey: "root@123",
   emailVerificationLink: "http://localhost:8080/verify?token=",
+  resetPasswordLink: "http://localhost:8080/reset-password?token=",
   tokenExpirationTime: 24 * 60 * 60,
   SMTPemailAddress: "pushkars@winjit.com",
   SMTPPassword: "waterplane@123",
   SMTPSenderEmail: "pushkars@winjit.com",
+  supportEmail:'developers.store@smartstore.com',
 };
