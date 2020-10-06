@@ -47,11 +47,7 @@ async function registration(req, res) {
     emailMessage = emailMessage
       .replace("$fullname", body.firstName)
       .replace("$link", config.emailVerificationLink + token);
-    functions.sendEmail(
-      body.email,
-      "Welcome to Smart Store",
-      emailMessage
-    );
+    functions.sendEmail(body.email, "Welcome to Smart Store", emailMessage);
 
     return res.json({
       status: {
@@ -70,7 +66,34 @@ async function registration(req, res) {
     }
   }
 }
+async function verifyEmail(req, res) {
+  var body = _.pick(req.body, ["token"]);
+  try {
+    const token = Buffer.from(body.token, "hex").toString("ascii");
+    const tokenDecrypt = functions.tokenDecrypt(token);
+
+    const updateQuery =
+      "UPDATE customers SET is_email_verified = 1 WHERE email = ?";
+    const verifyEmailDetails = await query(updateQuery, [tokenDecrypt.data]);
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: messages.emailVerificationSuccess,
+      },
+      result: verifyEmailDetails,
+    });
+  } catch (error) {
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
+  }
+}
 
 module.exports = {
   registration,
+  verifyEmail,
 };

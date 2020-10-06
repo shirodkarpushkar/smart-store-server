@@ -46,12 +46,45 @@ async function tokenEncrypt(data) {
  * @param {*} data (data to decrypt)
  * @param {*} return (decrypted data)
  */
-async function tokenDecrypt(data) {
+function tokenDecrypt(data) {
   try {
-    const decode = await jwt.verify(data, config.tokenkey);
+    const decode = jwt.verify(data, config.tokenkey);
     return decode;
-  } catch (error) {
-    return error;
+  } catch (err) {
+    throw {
+      statusCode: 400,
+      message: err.message,
+      result: null,
+    };
+    // if (err instanceof jwt.JsonWebTokenError) {
+    //   // ...something
+    //   throw {
+    //     statusCode: statusCodes.bad_request,
+    //     message: err.message,
+    //     result: null,
+    //   };
+    // } else if (err instanceof jwt.NotBeforeError) {
+    //   // ...something else
+    //   throw new Error({
+    //     statusCode: statusCodes.bad_request,
+    //     message: err.message,
+    //     result: null,
+    //   });
+    // } else if (err instanceof jwt.TokenExpiredError) {
+    //   // ... a third thing
+    //   throw new Error({
+    //     statusCode: statusCodes.bad_request,
+    //     message: err.message,
+    //     result: null,
+    //   });
+    // } else {
+    //   // assume the Error interface
+    //   throw new Error({
+    //     statusCode: statusCodes.bad_request,
+    //     message: err.message,
+    //     result: null,
+    //   });
+    // }
   }
 }
 /**
