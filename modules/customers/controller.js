@@ -288,11 +288,60 @@ async function forgotPassword(req, res) {
     });
   }
 }
+/**
+ * API for Reset Password
+ * @param {*} req (emailAddress )
+ * @param {*} res (json with success/failure)
+ */
+async function resetPassword(req, res) {
+  try {
+    var body = _.pick(req.body, ["token", "newPassword"]);
 
+    if (validator.isEmpty(body.token) || validator.isEmpty(body.newPassword)) {
+      throw {
+        statusCode: statusCodes.bad_request,
+        message: messages.invalidDetails,
+        result: null,
+      };
+    }
+    const email = Buffer.from(body.token, "hex").toString("ascii");
+    const emailAddressDetails = await functions.tokenDecrypt(email);
+    if (!emailAddressDetails.data) {
+      throw {
+        statusCode: statusCodes.unauthorized,
+        message: messages.emailLinkExpired,
+        result: null,
+      };
+    }
+    const password = functions.encryptData(body.newPassword);
+    const updateQuery = "UPDATE customers SET password = ? WHERE email = ?";
+
+    const passwordDetails = await query(updateQuery, [
+      password,
+      emailAddressDetails.data,
+    ]);
+
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: messages.passwordReset,
+      },
+    });
+  } catch (error) {
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
+  }
+}
 module.exports = {
   registration,
   verifyEmail,
   changePassword,
   signIn,
   forgotPassword,
+  resetPassword,
 };
