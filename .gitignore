@@ -11,3 +11,7 @@ public
 
 #Local Sql
 LocalInstance*
+
+#ENV
+.env.local
+.env.production
