@@ -11,5 +11,6 @@ router.put("/resetpassword", api.resetPassword);
 router.put("/changepassword", auth.validateToken, api.changePassword);
 /* profile */
 router.get("/profile", auth.validateToken, api.getProfile);
+router.patch("/profile", auth.validateToken, api.updateProfile);
 
 module.exports = router;

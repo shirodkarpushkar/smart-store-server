@@ -364,7 +364,48 @@ async function getProfile(req, res) {
     });
   }
 }
-
+async function updateProfile(req, res) {
+  try {
+    var body = _.pick(req.body, [
+      "firstName",
+      "lastName",
+      "avatar",
+      "addressLine1",
+      "addressLine2",
+      "city",
+      "state",
+      "zipcode",
+    ]);
+    const email = res.locals.tokenInfo.email;
+    const sqlQuery = "call updateProfile(?,?,?,?,?,?,?,?,?)";
+    const getDetails = await query(sqlQuery, [
+      email,
+      body.firstName,
+      body.lastName,
+      body.avatar,
+      body.addressLine1,
+      body.addressLine2,
+      body.city,
+      body.state,
+      body.zipcode,
+    ]);
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: messages.success,
+      },
+      result: getDetails,
+    });
+  } catch (error) {
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
+  }
+}
 module.exports = {
   registration,
   verifyEmail,
@@ -372,5 +413,6 @@ module.exports = {
   signIn,
   forgotPassword,
   resetPassword,
-  getProfile
+  getProfile,
+  updateProfile,
 };
