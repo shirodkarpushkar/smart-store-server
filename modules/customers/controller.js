@@ -364,6 +364,18 @@ async function getProfile(req, res) {
     });
   }
 }
+/**
+ * API for updating user profile
+ * @param {*} req ("firstName",
+      "lastName",
+      "avatar",
+      "addressLine1",
+      "addressLine2",
+      "city",
+      "state",
+      "zipcode" )
+ * @param {*} res (json with success/failure)
+ */
 async function updateProfile(req, res) {
   try {
     var body = _.pick(req.body, [
