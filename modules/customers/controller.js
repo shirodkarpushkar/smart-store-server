@@ -337,6 +337,34 @@ async function resetPassword(req, res) {
     });
   }
 }
+/**
+ * API for getting user profile
+ * @param {*} req (email )
+ * @param {*} res (json with success/failure)
+ */
+async function getProfile(req, res) {
+  try {
+    const email = res.locals.tokenInfo.email;
+    const getQuery = "call getProfile(?)";
+    const getDetails = await query(getQuery, [email]);
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: messages.success,
+      },
+      result: getDetails[0][0],
+    });
+  } catch (error) {
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
+  }
+}
+
 module.exports = {
   registration,
   verifyEmail,
@@ -344,4 +372,5 @@ module.exports = {
   signIn,
   forgotPassword,
   resetPassword,
+  getProfile
 };

@@ -9,5 +9,7 @@ router.post("/signin", api.signIn);
 router.post("/forgotpassword", api.forgotPassword);
 router.put("/resetpassword", api.resetPassword);
 router.put("/changepassword", auth.validateToken, api.changePassword);
+/* profile */
+router.get("/profile", auth.validateToken, api.getProfile);
 
 module.exports = router;
