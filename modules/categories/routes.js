@@ -1,4 +1,4 @@
-import api from "@modules/products/controller";
+import api from "@modules/categories/controller";
 import express from "express";
 import { auth } from "@middlewares/index";
 
