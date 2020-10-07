@@ -34,8 +34,8 @@ function decryptData(data) {
  * @param {*} return (encrypted data)
  */
 async function tokenEncrypt(data) {
-  var token = await jwt.sign({ data: data }, config.tokenkey, {
-    expiresIn: config.tokenExpirationTime,
+  var token = await jwt.sign({ data }, config.tokenkey, {
+    expiresIn: parseInt(config.tokenExpirationTime),
   }); // Expires in 1 day
   return token;
 }
