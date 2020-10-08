@@ -276,7 +276,7 @@
           {
             "name": "auth",
             "in": "header",
-            "required": true,
+            "required": false,
             "type": "string",
             "description": ""
           }
@@ -286,7 +286,12 @@
             "description": "",
             "headers": {}
           }
-        }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
       }
     },
     "/products/4": {
@@ -363,6 +368,13 @@
           }
         }
       }
+    }
+  },
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "auth",
+      "in": "header"
     }
   },
   "definitions": {
