@@ -4,6 +4,7 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import swaggerUi from "swagger-ui-express";
+import favicon from "serve-favicon"
 import swaggerDocument from './swagger.json'
 import indexRouter from '@routes/index';
 import mainRoutes  from  '@routes/main';
@@ -20,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(favicon("public/favicon.ico")); 
 // swagger
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
