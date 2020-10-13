@@ -418,6 +418,62 @@ async function updateProfile(req, res) {
     });
   }
 }
+/**
+ * API for updating user profile
+ * @param {*} req (query params searchText, page, itemsPerPage, sortBy, orderBy)
+ * @param {*} res (json with success/failure)
+ */
+async function getCustomerAddresses(req, res) {
+  try {
+    let searchText = req.query.search ? req.query.search : "";
+    let page = req.query.page ? parseInt(req.query.page, 10) : 1;
+    let itemsPerPage = req.query.itemsPerPage
+      ? parseInt(req.query.itemsPerPage, 10)
+      : null;
+    let sortBy = req.query.sortBy ? req.query.sortBy : "id";
+    let orderBy = req.query.orderBy ? req.query.orderBy : "desc";
+
+    const sqlQuery = "call getCustomerAddresses(?,?,?,?,?)";
+    const getDetails = await query(sqlQuery, [
+      searchText,
+      page,
+      itemsPerPage,
+      sortBy,
+      orderBy,
+    ]);
+    let response = getDetails[0].map((el) => {
+      return {
+        id: el.id,
+        customer: el.customer,
+        addressLine1: el.address,
+        addressLine2: el.address2,
+        city: el.city,
+        state: el.state,
+        zipcode: el.zipcode,
+      };
+    })
+    
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: messages.success,
+      },
+      result: {
+        totalItems: getDetails[0][0] ? getDetails[0][0].totalItems : 0,
+        items: response,
+      },
+    });
+  } catch (error) {
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
+  }
+}
+
 module.exports = {
   registration,
   verifyEmail,
@@ -427,4 +483,5 @@ module.exports = {
   resetPassword,
   getProfile,
   updateProfile,
+  getCustomerAddresses,
 };
