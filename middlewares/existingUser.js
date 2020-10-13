@@ -11,7 +11,7 @@ async function existingUser(req, res, next) {
     if (details.length) {
       return res.json({
         status: {
-          code: statusCodes.bad_request,
+          code: statusCodes.duplicate_details,
           message: messages.duplicateDetails,
         },
       });

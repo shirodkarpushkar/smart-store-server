@@ -14,6 +14,7 @@ module.exports = {
   not_found: 404,
   method_not_allowed: 405,
   not_acceptable: 406,
+  duplicate_details:409,
   precondition_failed: 412,
   unsupported_media_type: 415,
   internal_server_error: 500,
