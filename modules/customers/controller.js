@@ -480,13 +480,42 @@ async function getCustomerFavoriteProducts(req, res) {
 async function addProductFavorite(req, res) {
   try {
     const email = res.locals.tokenInfo.email;
-    const projectId = req.params.id;
+    const productId = req.params.id;
     const sqlQuery = "call addProductFavorite(?,?)";
-    const getDetails = await query(sqlQuery, [email, projectId]);
+    const getDetails = await query(sqlQuery, [email, productId]);
     return res.json({
       status: {
         code: statusCodes.success,
         message: "Project added to Favorites",
+      },
+    });
+  } catch (error) {
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
+  }
+}
+/**
+ * API for unmark favorite
+ * @param {*} req ("email" )
+ * @param {*} res (json with success/failure)
+ */
+async function unmarkProductFavorite(req, res) {
+  try {
+    const email = res.locals.tokenInfo.email;
+    const productId = req.params.id;
+    const sqlQuery = `DELETE FROM favorites WHERE customer =  (SELECT id
+        FROM customers
+        WHERE email = ?) AND product = ?`;
+    const getDetails = await query(sqlQuery, [email, productId]);
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: "Project removed from favorites",
       },
     });
   } catch (error) {
@@ -568,4 +597,5 @@ module.exports = {
   getCustomerProducts,
   getCustomerFavoriteProducts,
   addProductFavorite,
+  unmarkProductFavorite,
 };

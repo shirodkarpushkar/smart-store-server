@@ -17,6 +17,7 @@ router.get("/customer_addresses", auth.validateToken, api.getCustomerAddresses);
 /* products */
 router.get("/products", auth.validateToken, api.getCustomerProducts);
 router.get("/favorite/:id", auth.validateToken, api.addProductFavorite);
+router.delete("/favorite/:id", auth.validateToken, api.unmarkProductFavorite);
 router.get("/favorites", auth.validateToken, api.getCustomerFavoriteProducts);
 
 
