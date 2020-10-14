@@ -446,6 +446,33 @@ async function getCustomerProducts(req, res) {
   }
 }
 /**
+ * API for getting favored products
+ * @param {*} req ("email" )
+ * @param {*} res (json with success/failure)
+ */
+async function getCustomerFavoriteProducts(req, res) {
+  try {
+    const email = res.locals.tokenInfo.email;
+    const sqlQuery = "call getCustomerFavoriteProducts(?)";
+    const getDetails = await query(sqlQuery, [email]);
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: messages.success,
+      },
+      result: getDetails[0],
+    });
+  } catch (error) {
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
+  }
+}
+/**
  * API for updating user profile
  * @param {*} req (query params searchText, page, itemsPerPage, sortBy, orderBy)
  * @param {*} res (json with success/failure)
@@ -512,4 +539,5 @@ module.exports = {
   updateProfile,
   getCustomerAddresses,
   getCustomerProducts,
+  getCustomerFavoriteProducts,
 };
