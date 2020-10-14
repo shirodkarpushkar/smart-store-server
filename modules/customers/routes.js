@@ -16,6 +16,7 @@ router.patch("/profile", auth.validateToken, api.updateProfile);
 router.get("/customer_addresses", auth.validateToken, api.getCustomerAddresses);
 /* products */
 router.get("/products", auth.validateToken, api.getCustomerProducts);
+router.get("/products/:id", auth.validateToken, api.addProductFavorite);
 router.get("/favorites", auth.validateToken, api.getCustomerFavoriteProducts);
 
 

@@ -446,7 +446,7 @@ async function getCustomerProducts(req, res) {
   }
 }
 /**
- * API for getting favored products
+ * API for getCustomerFavoriteProducts
  * @param {*} req ("email" )
  * @param {*} res (json with success/failure)
  */
@@ -473,7 +473,34 @@ async function getCustomerFavoriteProducts(req, res) {
   }
 }
 /**
- * API for updating user profile
+ * API for getCustomerFavoriteProducts
+ * @param {*} req ("email" )
+ * @param {*} res (json with success/failure)
+ */
+async function addProductFavorite(req, res) {
+  try {
+    const email = res.locals.tokenInfo.email;
+    const projectId = req.params.id;
+    const sqlQuery = "call addProductFavorite(?,?)";
+    const getDetails = await query(sqlQuery, [email, projectId]);
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: "Project added to Favorites",
+      },
+    });
+  } catch (error) {
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
+  }
+}
+/**
+ * API for getCustomerAddresses
  * @param {*} req (query params searchText, page, itemsPerPage, sortBy, orderBy)
  * @param {*} res (json with success/failure)
  */
@@ -540,4 +567,5 @@ module.exports = {
   getCustomerAddresses,
   getCustomerProducts,
   getCustomerFavoriteProducts,
+  addProductFavorite,
 };
