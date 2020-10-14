@@ -14,5 +14,8 @@ router.get("/profile", auth.validateToken, api.getProfile);
 router.patch("/profile", auth.validateToken, api.updateProfile);
 /* pagination example */
 router.get("/customer_addresses", auth.validateToken, api.getCustomerAddresses);
+/* products */
+router.get("/products", auth.validateToken, api.getCustomerProducts);
+
 
 module.exports = router;

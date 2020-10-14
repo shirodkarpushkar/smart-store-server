@@ -420,6 +420,33 @@ async function updateProfile(req, res) {
 }
 /**
  * API for updating user profile
+ * @param {*} req ("email" )
+ * @param {*} res (json with success/failure)
+ */
+async function getCustomerProducts(req, res) {
+  try {
+    const email = res.locals.tokenInfo.email;
+    const sqlQuery = "call getCustomerProducts(?)";
+    const getDetails = await query(sqlQuery, [email]);
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: messages.success,
+      },
+      result: getDetails[0],
+    });
+  } catch (error) {
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
+  }
+}
+/**
+ * API for updating user profile
  * @param {*} req (query params searchText, page, itemsPerPage, sortBy, orderBy)
  * @param {*} res (json with success/failure)
  */
@@ -451,8 +478,8 @@ async function getCustomerAddresses(req, res) {
         state: el.state,
         zipcode: el.zipcode,
       };
-    })
-    
+    });
+
     return res.json({
       status: {
         code: statusCodes.success,
@@ -484,4 +511,5 @@ module.exports = {
   getProfile,
   updateProfile,
   getCustomerAddresses,
+  getCustomerProducts,
 };
