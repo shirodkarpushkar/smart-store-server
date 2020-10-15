@@ -50,40 +50,36 @@ function tokenDecrypt(data) {
     const decode = jwt.verify(data, config.tokenkey);
     return decode;
   } catch (err) {
-    throw {
-      statusCode: 400,
-      message: err.message,
-      result: null,
-    };
-    // if (err instanceof jwt.JsonWebTokenError) {
-    //   // ...something
-    //   throw {
-    //     statusCode: statusCodes.bad_request,
-    //     message: err.message,
-    //     result: null,
-    //   };
-    // } else if (err instanceof jwt.NotBeforeError) {
-    //   // ...something else
-    //   throw new Error({
-    //     statusCode: statusCodes.bad_request,
-    //     message: err.message,
-    //     result: null,
-    //   });
-    // } else if (err instanceof jwt.TokenExpiredError) {
-    //   // ... a third thing
-    //   throw new Error({
-    //     statusCode: statusCodes.bad_request,
-    //     message: err.message,
-    //     result: null,
-    //   });
-    // } else {
-    //   // assume the Error interface
-    //   throw new Error({
-    //     statusCode: statusCodes.bad_request,
-    //     message: err.message,
-    //     result: null,
-    //   });
-    // }
+   
+    if (err instanceof jwt.JsonWebTokenError) {
+      // ...something
+      throw {
+        statusCode: 400,
+        message: err.message,
+        result: null,
+      };
+    } else if (err instanceof jwt.NotBeforeError) {
+      // ...something else
+      throw new Error({
+        statusCode: 400,
+        message: err.message,
+        result: null,
+      });
+    } else if (err instanceof jwt.TokenExpiredError) {
+      // ... a third thing
+      throw new Error({
+        statusCode: 410,
+        message: err.message,
+        result: null,
+      });
+    } else {
+      // assume the Error interface
+      throw new Error({
+        statusCode: 400,
+        message: err.message,
+        result: null,
+      });
+    }
   }
 }
 /**
