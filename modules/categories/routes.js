@@ -6,5 +6,10 @@ const router = express.Router();
 
 router.get("/", auth.validateToken, api.getAllCategories);
 router.get("/:id", auth.validateToken, api.getCategoryById);
+router.get(
+  "/:id/products",
+  auth.validateToken,
+  api.getCustomerProductsByCategory
+);
 
 module.exports = router;

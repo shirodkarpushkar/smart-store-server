@@ -595,6 +595,7 @@ module.exports = {
   updateProfile,
   getCustomerAddresses,
   getCustomerProducts,
+
   getCustomerFavoriteProducts,
   addProductFavorite,
   unmarkProductFavorite,

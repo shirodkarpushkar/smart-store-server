@@ -58,8 +58,36 @@ async function getCategoryById(req, res) {
     });
   }
 }
-
+/**
+ * API for getting customer products by category Id
+ * @param {*} req ("email",categoryId )
+ * @param {*} res (json with success/failure)
+ */
+async function getCustomerProductsByCategory(req, res) {
+  try {
+    const email = res.locals.tokenInfo.email;
+    const categoryId = req.params.id;
+    const sqlQuery = "call getCustomerProductsByCategory(?,?)";
+    const getDetails = await query(sqlQuery, [email, categoryId]);
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: messages.success,
+      },
+      result: getDetails[0],
+    });
+  } catch (error) {
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
+  }
+}
 module.exports = {
   getAllCategories,
   getCategoryById,
+  getCustomerProductsByCategory,
 };
