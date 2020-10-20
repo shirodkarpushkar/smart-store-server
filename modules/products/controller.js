@@ -88,11 +88,11 @@ where product = ?`;
         customer: {
           id: el.customer_id,
           name: el.customer_first_name + " " + el.customer_last_name,
-          avatar : el.customer_avatar
+          avatar: el.customer_avatar,
         },
         createdAt: el.review_date,
       };
-    })
+    });
     return res.json({
       status: {
         code: statusCodes.success,
@@ -110,9 +110,49 @@ where product = ?`;
     });
   }
 }
+/**
+ * API for adding reviews by productId
+ * @param {*} req (productId)
+ * @param {*} res (json with success/failure)
+ */
+async function addProductReview(req, res) {
+  try {
+    let body = _.pick(req.body, [
+      "title",
+      "description",
+      "rating",
+    ]);
+    const email = res.locals.tokenInfo.email;
+    const productId = parseInt(req.params.id, 10);
+    const sqlQuery = "call addProductReview(?,?,?,?,?) ";
+    const getDetails = await query(sqlQuery, [
+      email,
+      productId,
+      body.title,
+      body.description,
+      body.rating,
+    ]);
+
+    return res.json({
+      status: {
+        code: statusCodes.success,
+        message: "Review added Successfully",
+      },
+    });
+  } catch (error) {
+    return res.json({
+      status: {
+        code: error.statusCode,
+        message: error.message,
+      },
+      result: JSON.stringify(error),
+    });
+  }
+}
 
 module.exports = {
   getAllProducts,
   getProductById,
   getReviewsByProductId,
+  addProductReview,
 };
