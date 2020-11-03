@@ -345,14 +345,16 @@ async function resetPassword(req, res) {
 async function getProfile(req, res) {
   try {
     const email = res.locals.tokenInfo.email;
-    const getQuery = "call getProfile(?)";
-    const getDetails = await query(getQuery, [email]);
+    const getQuery = "call getProfile(?);call getCustomerFavoriteProducts(?)";
+    const getDetails = await query(getQuery, [email, email]);
+    const result = getDetails[0][0]
+    result.favorites = getDetails[2];
     return res.json({
       status: {
         code: statusCodes.success,
         message: messages.success,
       },
-      result: getDetails[0][0],
+      result,
     });
   } catch (error) {
     return res.json({
